@@ -35,6 +35,9 @@ var pmouseVec;
 
 var removeButton;
 
+// Wheel Colors
+var palette = ["#1abc9c","#2ecc71","#3498db","#9b59b6","#f1c40f","#e67e22","#e74c3c","#34495e","#95a5a6"];
+
 function setup() {
 
   Parse.initialize("AT3yu7k46UyerBgi8vt1KB9WEGP4kV9YCOKD8zMK", "6OOxWTjbLNBvdEL7tftynyXlZmHjok04MsozzZ0m");
@@ -75,7 +78,7 @@ function setup() {
 }
 
 function draw() {
-  
+
   // A user spin
   if (mouseIsPressed) {
     if (!mouseVec) {
@@ -102,35 +105,36 @@ function draw() {
   // For every slice
   for (var i = 0; i < total; i++) {
     push();
-    // ALternate fill color
-    if (i % 2 == 0) fill(175);
-    else fill(75);
+    // Choose a color for the slice from the palette array
+    var col = palette[i % palette.length];
+    fill(col);
 
     // Where is the arrow?
     var testAngle = angle-sz/2;
     var begin = (i);
     var end = (i+1);
-    
+
     // Which slice
     var which = (i+1)%total;
 
     // Is it inside the slice?
     if (((testAngle >= begin*sz && testAngle < end*sz) || (testAngle < 0 && i == total-1))) {
       selected = which;
-      divs[which].style("background-color","#FFFFFF");
+      // background-color property match slice color
+      divs[which].style("background-color",col);
       divs[which].style("color","#000000");
     } else {
       divs[which].style("background-color","#000000");
       divs[(i+1) % total].style("color","#FFFFFF");
     }
-    
+
     // Draw slice
     rotate(sz*i+sz/2);
     noStroke();
     arc(0, 0, w, w, 0, sz);
     pop();
   }
-  
+
   // This is just some lines to separate the slices
   for (var i = 0; i < total; i++) {
     push();
@@ -140,7 +144,7 @@ function draw() {
     line(0, 0, w/2, 0);
     pop();
   }
-  
+
 
   // The spinner
   rotate(angle);
@@ -150,7 +154,7 @@ function draw() {
   strokeWeight(8);
   stroke(255);
   line(-spinnerRad, 0, spinnerRad, 0);
-  
+
   fill(255);
   // Arbitrary way to draw arrow
   triangle(spinnerRad, 0, spinnerRad - 24, -12, spinnerRad - 24, 12);
@@ -193,7 +197,7 @@ function createDivs() {
 
   total = names.length;
   sz = TWO_PI / total;   // Size of each slice
-   
+
   // Clear existing divs
   if (divs) {
     for (var i = 0; i < divs.length; i++) {
@@ -201,7 +205,7 @@ function createDivs() {
     }
   }
 
-  
+
   // Make new divs
   divs = [];
   var theta = 0;
